@@ -33,12 +33,12 @@ impl Parse for TaskAttributes {
         let vis = input.parse::<proc_macro2::Literal>()?;
         sc.services = vis
             .to_string()
-            .replace("\"", "")
-            .split(",")
+            .replace('\"', "")
+            .split(',')
             .map(|x| x.to_string())
             .collect();
 
-        return Ok(sc);
+        Ok(sc)
     }
 }
 #[proc_macro_attribute]

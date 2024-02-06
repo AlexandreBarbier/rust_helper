@@ -1,5 +1,7 @@
+#[cfg(feature = "logger")]
 use crate::logger::get_log_format;
 use actix_cors::Cors;
+#[cfg(feature = "logger")]
 use actix_web::middleware::Logger;
 use serde::{Deserialize, Serialize};
 
@@ -31,7 +33,7 @@ pub fn get_default_cors_middelware() -> Cors {
         .allowed_methods(vec!["GET", "POST", "PUT", "HEAD", "OPTIONS"])
         .max_age(144000)
 }
-
+#[cfg(feature = "logger")]
 pub fn get_default_logger_middleware() -> actix_web::middleware::Logger {
     Logger::new(get_log_format())
 }

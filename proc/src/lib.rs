@@ -58,7 +58,7 @@ pub fn endpoint(attr: TokenStream, item: TokenStream) -> TokenStream {
         .unwrap();
 
     let k: proc_macro2::TokenStream = quote!(
-        pub struct #struct_name {}
+        #parsed_item
 
         impl Endpoint for #struct_name {
             fn services() -> actix_web::Scope {

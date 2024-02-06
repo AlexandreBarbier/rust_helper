@@ -25,7 +25,7 @@ proc_macro = ["proc"]
 redis_client = ["redis"]
 
 [lib]
-name = "flow_helpers"
+name = "rust_helpers"
 
 [dependencies]
 # logger

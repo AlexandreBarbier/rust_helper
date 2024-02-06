@@ -3,7 +3,7 @@ use std::io::Error;
 
 use actix_web::{App, HttpServer};
 use endpoints::Health;
-use flow_helpers::web_server::{self, Endpoint};
+use rust_helpers::web_server::{self, Endpoint};
 
 #[actix_web::main]
 async fn main() -> Result<(), Error> {

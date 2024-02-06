@@ -1,7 +1,7 @@
-use flow_helpers::proc::endpoint;
+use rust_helpers::proc::endpoint;
 
 use actix_web::{get, web, HttpResponse, Responder};
-use flow_helpers::web_server::Endpoint;
+use rust_helpers::web_server::Endpoint;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 

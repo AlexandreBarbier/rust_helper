@@ -1,4 +1,3 @@
-workspace = { members = ["exemples/api_client"] }
 [package]
 name = "rust_helpers"
 version = "0.1.0"

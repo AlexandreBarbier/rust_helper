@@ -1,6 +1,6 @@
 workspace = { members = ["exemples/api_client"] }
 [package]
-name = "flow_helpers"
+name = "rust_helpers"
 version = "0.1.0"
 edition = "2021"
 

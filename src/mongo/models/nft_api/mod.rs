@@ -25,7 +25,6 @@ pub async fn create_index(m_client: &Client) -> Result<(), Box<dyn Error>> {
                 })
                 .options(IndexOptions::builder().unique(true).build())
                 .build(),
-            None,
         )
         .await?;
     Ok(())
@@ -37,7 +36,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
         .update_many(
             mongo_doc! {"done": true},
             mongo_doc! {"$set": {"done": false, "lastCursor": ""}},
-            None,
         )
         .await
     {
@@ -45,7 +43,7 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
         _ => {}
     }
     let nft_col = nft::Nft::get_collection(m_client);
-    nft_col.drop(None).await?;
+    nft_col.drop().await?;
     nft_col
         .create_index(
             IndexModel::builder()
@@ -54,7 +52,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                 })
                 .options(IndexOptions::builder().sparse(true).build())
                 .build(),
-            None,
         )
         .await?;
     nft_col
@@ -66,12 +63,11 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                 })
                 .options(IndexOptions::builder().unique(true).build())
                 .build(),
-            None,
         )
         .await?;
 
     let tra_col = Transfer::get_collection(m_client);
-    tra_col.drop(None).await?;
+    tra_col.drop().await?;
     tra_col
         .create_index(
             IndexModel::builder()
@@ -83,7 +79,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                 })
                 .options(IndexOptions::builder().unique(true).build())
                 .build(),
-            None,
         )
         .await?;
     tra_col
@@ -93,7 +88,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                     "nft": 1,
                 })
                 .build(),
-            None,
         )
         .await?;
     tra_col
@@ -103,7 +97,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                     "from": 1,
                 })
                 .build(),
-            None,
         )
         .await?;
     tra_col
@@ -113,11 +106,10 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                     "to": 1,
                 })
                 .build(),
-            None,
         )
         .await?;
     let owners_col = Owner::get_collection(m_client);
-    owners_col.drop(None).await?;
+    owners_col.drop().await?;
     owners_col
         .create_index(
             IndexModel::builder()
@@ -126,7 +118,6 @@ pub async fn create_schema(m_client: &Client) -> Result<(), Box<dyn Error>> {
                 })
                 .options(IndexOptions::builder().unique(true).build())
                 .build(),
-            None,
         )
         .await?;
     Ok(())

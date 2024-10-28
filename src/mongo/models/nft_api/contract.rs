@@ -30,7 +30,6 @@ impl Contract {
                     "_id": self._id
                 },
                 update,
-                None,
             )
             .await;
     }

@@ -1,6 +1,6 @@
 use crate::mongo::models::{common::ModelCollection, mongo_doc};
 use bson::oid::ObjectId;
-use mongodb::options::FindOneOptions;
+
 use mongodb::{Client, ClientSession};
 use proc::ModelCollection;
 use serde::{Deserialize, Serialize};
@@ -47,7 +47,7 @@ impl Spork {
     }
 
     pub async fn save(self, client: &Client) {
-        let _ = Spork::get_collection(client).insert_one(self, None).await;
+        let _ = Spork::get_collection(client).insert_one(self).await;
     }
 
     pub async fn update_requested_block(
@@ -63,20 +63,16 @@ impl Spork {
             }
         };
         let _ = match session {
-            Some(s) => s_col.update_one_with_session(q, doc_update, None, s).await,
-            _ => s_col.update_one(q, doc_update, None).await,
+            Some(s) => s_col.update_one(q, doc_update).session(s).await,
+            _ => s_col.update_one(q, doc_update).await,
         };
     }
 
     pub async fn get(client: &Client, height: i64) -> Option<Spork> {
         let s_col = Spork::get_collection(client);
         s_col
-            .find_one(
-                mongo_doc! { "start_height": { "$lt": height } },
-                FindOneOptions::builder()
-                    .sort(mongo_doc! { "start_height": -1 })
-                    .build(),
-            )
+            .find_one(mongo_doc! { "start_height": { "$lt": height } })
+            .sort(mongo_doc! { "start_height": -1 })
             .await
             .unwrap()
     }

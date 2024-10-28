@@ -23,20 +23,15 @@ impl Nft {
     pub async fn insert(&self, client: &Client, session: Option<&mut ClientSession>) {
         let nft_col = Nft::get_collection(client);
         match nft_col
-            .find_one(
-                mongo_doc! {"contract": self.contract, "uiid": self.uiid.clone()},
-                None,
-            )
+            .find_one(mongo_doc! {"contract": self.contract, "uiid": self.uiid.clone()})
             .await
         {
             Ok(Some(_x)) => {}
             _ => {
                 if session.is_some() {
-                    let _ = nft_col
-                        .insert_one_with_session(self, None, session.unwrap())
-                        .await;
+                    let _ = nft_col.insert_one(self).session(session.unwrap()).await;
                 }
-                let _ = nft_col.insert_one(self, None).await;
+                let _ = nft_col.insert_one(self).await;
             }
         }
     }
@@ -50,7 +45,7 @@ impl Nft {
     ) -> (Nft, bool) {
         let nft_col = Nft::get_collection(client);
         match nft_col
-            .find_one(mongo_doc! {"contract": contract._id, "uiid": nft_id}, None)
+            .find_one(mongo_doc! {"contract": contract._id, "uiid": nft_id})
             .await
         {
             Ok(Some(nft)) => return (nft, false),
@@ -64,8 +59,8 @@ impl Nft {
                 };
                 if save {
                     let _ = match session {
-                        Some(s) => nft_col.insert_one_with_session(&new_nft, None, s).await,
-                        _ => nft_col.insert_one(&new_nft, None).await,
+                        Some(s) => nft_col.insert_one(&new_nft).session(s).await,
+                        _ => nft_col.insert_one(&new_nft).await,
                     };
                 }
 
@@ -105,8 +100,8 @@ impl Nft {
             "_id": self._id
         };
         match session {
-            Some(s) => nft_col.update_one_with_session(q, update, None, s).await,
-            _ => nft_col.update_one(q, update, None).await,
+            Some(s) => nft_col.update_one(q, update).session(s).await,
+            _ => nft_col.update_one(q, update).await,
         }
     }
     pub async fn mint(

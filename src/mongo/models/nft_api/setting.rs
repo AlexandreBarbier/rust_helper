@@ -1,4 +1,5 @@
 use crate::mongo::models::{common::ModelCollection, mongo_doc};
+
 use bson::oid::ObjectId;
 use futures::TryStreamExt;
 use mongodb::{Client, ClientSession};
@@ -19,12 +20,12 @@ impl Setting {
         }
     }
     pub async fn save(self, client: &Client) {
-        let _ = Setting::get_collection(client).insert_one(self, None).await;
+        let _ = Setting::get_collection(client).insert_one(self).await;
     }
     pub async fn get(client: &Client) -> Setting {
         let s_col = Setting::get_collection(client);
         let settings: Vec<Setting> = s_col
-            .find(None, None)
+            .find(mongo_doc! {})
             .await
             .unwrap()
             .try_collect()
@@ -42,8 +43,8 @@ impl Setting {
             }
         };
         let _ = match session {
-            Some(s) => s_col.update_one_with_session(q, doc_update, None, s).await,
-            _ => s_col.update_one(q, doc_update, None).await,
+            Some(s) => s_col.update_one(q, doc_update).session(s).await,
+            _ => s_col.update_one(q, doc_update).await,
         };
     }
 }

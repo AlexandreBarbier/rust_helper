@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote, ToTokens};
-use std::env;
+
 use syn::{
     parse::{Parse, ParseStream},
     parse_macro_input, parse_quote,

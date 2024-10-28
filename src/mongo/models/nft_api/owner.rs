@@ -31,17 +31,14 @@ impl Owner {
             "null" => "0x0".to_string(),
             _ => address,
         };
-        match owner_col
-            .find_one(mongo_doc! {"address": &address}, None)
-            .await
-        {
+        match owner_col.find_one(mongo_doc! {"address": &address}).await {
             Ok(Some(owner)) => (owner, false),
             _ => {
                 let new_owner = Owner::new(address);
                 if save {
                     let res = match session {
-                        Some(s) => owner_col.insert_one_with_session(&new_owner, None, s).await,
-                        _ => owner_col.insert_one(&new_owner, None).await,
+                        Some(s) => owner_col.insert_one(&new_owner).session(s).await,
+                        _ => owner_col.insert_one(&new_owner).await,
                     };
                     if res.is_err() {
                         println!("owner {:?}", res.err());
@@ -61,8 +58,8 @@ impl Owner {
         let o_col = Owner::get_collection(client);
         let q = mongo_doc! {"_id": self._id};
         match session {
-            Some(s) => o_col.update_one_with_session(q, operation, None, s).await,
-            _ => o_col.update_one(q, operation, None).await,
+            Some(s) => o_col.update_one(q, operation).session(s).await,
+            _ => o_col.update_one(q, operation).await,
         }
     }
 }

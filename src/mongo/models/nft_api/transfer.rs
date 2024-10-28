@@ -79,9 +79,7 @@ impl Transfer {
             nft_id,
             contract,
         };
-        Transfer::get_collection(client)
-            .insert_one(transfer, None)
-            .await
+        Transfer::get_collection(client).insert_one(transfer).await
     }
 
     pub async fn find(
@@ -95,16 +93,13 @@ impl Transfer {
         let transfer_col = Transfer::get_collection(client);
 
         match transfer_col
-            .find_one(
-                mongo_doc! {
-                    "date": date.clone(),
-                    "from": from.clone(),
-                    "to": to.clone(),
-                    "nft": nft.clone(),
-                    "transaction": transaction.clone()
-                },
-                None,
-            )
+            .find_one(mongo_doc! {
+                "date": date.clone(),
+                "from": from.clone(),
+                "to": to.clone(),
+                "nft": nft.clone(),
+                "transaction": transaction.clone()
+            })
             .await
         {
             Ok(Some(c)) => Some(c),
@@ -130,16 +125,13 @@ impl Transfer {
         let transfer_col = Transfer::get_collection(client);
 
         match transfer_col
-            .find_one(
-                mongo_doc! {
-                    "date": date.clone(),
-                    "from": from.clone(),
-                    "to": to.clone(),
-                    "nft_id": nft_id,
-                    "contract": contract.clone(),
-                },
-                None,
-            )
+            .find_one(mongo_doc! {
+                "date": date.clone(),
+                "from": from.clone(),
+                "to": to.clone(),
+                "nft_id": nft_id,
+                "contract": contract.clone(),
+            })
             .await
         {
             Ok(Some(c)) => Some((c, false)),
@@ -158,12 +150,13 @@ impl Transfer {
                 let res = match session {
                     Some(x) => {
                         Transfer::get_collection(client)
-                            .insert_one_with_session(transfer.clone(), None, x)
+                            .insert_one(transfer.clone())
+                            .session(x)
                             .await
                     }
                     _ => {
                         Transfer::get_collection(client)
-                            .insert_one(transfer.clone(), None)
+                            .insert_one(transfer.clone())
                             .await
                     }
                 };
@@ -189,8 +182,8 @@ impl Transfer {
             }
         };
         let res = match session {
-            Some(s) => s_col.update_one_with_session(q, doc_update, None, s).await,
-            _ => s_col.update_one(q, doc_update, None).await,
+            Some(s) => s_col.update_one(q, doc_update).session(s).await,
+            _ => s_col.update_one(q, doc_update).await,
         };
         if res.is_err() {
             error!("{:?}", res.err());
@@ -198,8 +191,6 @@ impl Transfer {
     }
 
     pub async fn save(&self, client: &Client) -> Result<InsertOneResult, Error> {
-        Transfer::get_collection(client)
-            .insert_one(self, None)
-            .await
+        Transfer::get_collection(client).insert_one(self).await
     }
 }

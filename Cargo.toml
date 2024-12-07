@@ -5,7 +5,7 @@ edition = "2021"
 
 [features]
 default = []
-full = ["logger", "web_server", "mongo", "flow", "websocket", "proc"]
+full = ["logger", "web_server", "mongo", "websocket", "proc"]
 
 mongo = [
   "mongodb",
@@ -18,7 +18,6 @@ mongo = [
 ]
 logger = ["env_logger", "chrono"]
 web_server = ["actix-web", "actix-cors", "serde", "serde_json", "proc"]
-flow = ["flow_rs", "serde_json", "async-trait", "serde"]
 websocket = ["actix-web-actors", "actix", "rand", "serde_json", "proc"]
 proc_macro = ["proc"]
 redis_client = ["redis"]
@@ -44,10 +43,7 @@ bson = { version = "2", features = ["chrono-0_4"], optional = true }
 serde = { version = "1.0.213", optional = true, features = ["derive"] }
 async-trait = { version = "0.1.83", optional = true }
 futures = { version = "0.3.31", optional = true }
-
-# flow
 serde_json = { version = "1.0.132", optional = true }
-flow_rs = { git = "https://github.com/barterYard/flow_rust", branch = "main", optional = true }
 
 # websocket
 actix-web-actors = { version = "4.3.1", optional = true }

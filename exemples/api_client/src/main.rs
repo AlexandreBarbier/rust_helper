@@ -11,7 +11,7 @@ use std::io::Error;
 async fn main() -> Result<(), Error> {
     let mongo_client = mongo::client::create().await;
     let usr = User::get_or_create("name".to_string(), "email".to_string(), &mongo_client).await;
-    println!("{:?}", usr);
+
     HttpServer::new(move || {
         App::new()
             .wrap(web_server::get_default_cors_middelware())

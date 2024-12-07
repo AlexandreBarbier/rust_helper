@@ -38,7 +38,7 @@ impl User {
         client: &Client,
     ) -> Option<(Self, bool)> {
         let user_col = User::get_collection(client);
-        println!("{:?}", user_col);
+
         if let Ok(user) = user_col.find_one(mongo_doc! {"email": email.clone()}).await {
             match user {
                 Some(usr) => Some((usr, false)),
@@ -50,7 +50,6 @@ impl User {
                 }
             }
         } else {
-            println!("error");
             error!("error");
             None
         }

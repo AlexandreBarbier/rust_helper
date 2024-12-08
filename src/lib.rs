@@ -1,7 +1,8 @@
+pub mod macros;
+
 #[cfg(feature = "logger")]
 pub mod logger;
 
-pub mod macros;
 #[cfg(feature = "mongo")]
 pub mod mongo;
 
@@ -10,6 +11,9 @@ pub mod web_server;
 
 #[cfg(feature = "redis")]
 pub mod redis;
+
+#[cfg(feature = "postgres")]
+pub mod postgres;
 
 #[cfg(feature = "websocket")]
 pub mod websocket;

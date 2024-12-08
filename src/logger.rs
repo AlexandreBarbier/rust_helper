@@ -6,27 +6,18 @@ pub fn init_logger() {
     env_logger::builder()
         .format(|buf, record| {
             let datetime: DateTime<Utc> = SystemTime::now().into();
-            if record.level() == log::Level::Error {
-                let file_line = format!(
-                    "{:?} {}",
-                    record.file().unwrap_or(""),
-                    record.line().unwrap_or_default()
-                );
-                return writeln!(
-                    buf,
-                    "{} {}: -{}- {}",
-                    datetime.format("%T %D"),
-                    record.level(),
-                    file_line,
-                    record.args()
-                );
-            }
-
+            let file_line = match (record.file(), record.line()) {
+                (Some(file), Some(line)) if record.level() == log::Level::Error => {
+                    format!(" -{} {}-", file, line)
+                }
+                _ => String::new(),
+            };
             writeln!(
                 buf,
-                "{} {}: {}",
+                "{} {}:{} {}",
                 datetime.format("%T %D"),
                 record.level(),
+                file_line,
                 record.args()
             )
         })

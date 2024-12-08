@@ -6,7 +6,7 @@ use rust_helpers::mongo::{
     mongodb::{
         bson::{self, oid::ObjectId},
         error::Error,
-        results::{InsertOneResult, UpdateResult},
+        results::InsertOneResult,
         Client,
     },
 };
@@ -55,32 +55,9 @@ impl User {
         }
     }
 
-    pub async fn find(id: String, client: &Client) -> Option<Self> {
-        match User::get_collection(client)
-            .find_one(mongo_doc! {"_id":id.clone()})
-            .await
-        {
-            Ok(user) => user,
-            _ => None,
-        }
-    }
-
     pub async fn save(self, client: &Client) -> Result<InsertOneResult, Error> {
         let user_col = User::get_collection(client);
         user_col.insert_one(self).await
-    }
-
-    pub async fn update(self, client: &Client) -> Result<UpdateResult, Error> {
-        let user_col = User::get_collection(client);
-        user_col
-            .update_one(
-                mongo_doc! {"_id": self._id.to_hex()},
-                mongo_doc! {
-                    "$set": bson::to_document(&self).unwrap()
-                },
-            )
-            .upsert(true)
-            .await
     }
 }
 
